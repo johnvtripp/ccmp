@@ -1,0 +1,39 @@
+local sScrolling
+local sInitialMouseX, sInitialMouseY
+local sInitialHScroll, sInitialVScroll
+
+on mouseDown
+   ## Allow the group to scroll
+   put true into sScrolling
+   
+   ## Record the initial touch position
+   put item 1 of the mouseLoc into sInitialMouseX
+   put item 2 of the mouseLoc into sInitialMouseY
+   
+   ## Record the initial hScroll and vScroll
+   //put the vScroll of me into sInitialVScroll
+   put the hScroll of me into sInitialHScroll
+end mouseDown
+
+on mouseMove mouseX, mouseY
+   ## If the screen is being touched then
+   if sScrolling then      
+      ## Calculate how far the touch has moved since it started
+      put mouseY - sInitialMouseY into tVChange
+      put mouseX- sInitialMouseX into tHChange
+      
+      ## Reset the hScroll and vScroll to follow the touch
+      lock screen
+      //set the vScroll of me to sInitialVScroll - tVChange
+      set the hScroll of me to sInitialHScroll - tHChange
+      unlock screen
+   end if
+end mouseMove
+
+on mouseRelease
+   mouseUp
+end mouseRelease
+
+on mouseUp
+   put false into sScrolling
+end mouseUp
